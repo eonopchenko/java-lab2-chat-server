@@ -13,6 +13,10 @@ import javafx.scene.control.TextField;
 
 public class ClientController implements Runnable {
 	
+	Socket client;
+	DataInputStream dis;
+	DataOutputStream dos;
+	
 	@FXML
 	private ListView lvUsers;
 	
@@ -28,7 +32,7 @@ public class ClientController implements Runnable {
     @FXML
     void btnSendOnActionHandler(ActionEvent event) {
 		try {
-			dos.writeInt(0);
+			dos.writeInt(ServerConstants.CHAT_MESSAGE);
 			dos.writeUTF(tfSend.getText());
 			dos.flush();
 		} catch (IOException e) {
@@ -36,9 +40,7 @@ public class ClientController implements Runnable {
 		}
     }
     
-	Socket client;
-	DataInputStream dis;
-	DataOutputStream dos;
+
     
     public ClientController() {
 		try {
@@ -59,7 +61,23 @@ public class ClientController implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
+		while(true)
+		{
+			try {
+				int messageType = dis.readInt(); // receive a message from the server, determine message type based on an integer
+				
+				// decode message and process
+				switch(messageType)
+				{
+					case ServerConstants.CHAT_BROADCAST:
+						taChat.appendText(dis.readUTF()+"\n");
+						break;
+				}
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

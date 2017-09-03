@@ -1,6 +1,7 @@
 /ClientController.class
 /ClientLayout.fxml
 /ClientMain.class
+/ServerConstants.class
+/ServerMain$ConnectionThread.class
 /ServerMain.class
-/ServerController.class
-/ServerLayout.fxml
+/ServerThread.class
