@@ -5,3 +5,7 @@
 /ServerMain$ConnectionThread.class
 /ServerMain.class
 /ServerThread.class
+/AppendMessageInterface.class
+/ServerController.fxml
+/ServerController.class
+/ServerLayout.fxml

@@ -9,16 +9,18 @@ public class ServerThread extends Thread
 	DataInputStream dis;
 	DataOutputStream dos;
 	Socket remoteClient;	
+	ServerController serverController;
 	ArrayList<ServerThread> connectedClients;
-	ServerMain server = new ServerMain();
+
 	
-	public ServerThread(Socket remoteClient, ArrayList<ServerThread> connectedClients)
+	public ServerThread(Socket remoteClient, ServerController serverController, ArrayList<ServerThread> connectedClients)
 	{
 		this.remoteClient = remoteClient;
 		this.connectedClients = connectedClients;
 		try {
 			this.dis = new DataInputStream(remoteClient.getInputStream());
 			this.dos = new DataOutputStream(remoteClient.getOutputStream());
+			this.serverController = serverController;
 		}
 		catch (IOException e)
 		{
@@ -39,7 +41,7 @@ public class ServerThread extends Thread
 					case ServerConstants.CHAT_MESSAGE:
 						String data = dis.readUTF();
 						System.err.println(data);
-						server.appendMessage(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data+"\n");
+						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data+"\n");
 						
 						for(ServerThread otherClient: connectedClients)
 						{
