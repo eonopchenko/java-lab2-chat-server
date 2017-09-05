@@ -9,7 +9,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientController">
    <left>
-      <ListView fx:id="lvUsers" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="lvUsers" onMouseClicked="#lvUsersOnMouseClickedHandler" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
    <center>
       <TextArea fx:id="taChat" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />

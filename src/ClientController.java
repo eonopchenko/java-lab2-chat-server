@@ -45,6 +45,12 @@ public class ClientController implements Runnable {
 		tfSend.clear();
     }
     
+    @FXML
+    void lvUsersOnMouseClickedHandler() {
+    	String name = lvUsers.getSelectionModel().getSelectedItem();
+    	tfSend.setText("@" + name + " ");
+    }
+    
     public ClientController() {
 		try {
 			client = new Socket("localhost", 5000);
