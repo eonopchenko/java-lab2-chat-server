@@ -52,7 +52,7 @@ public class ClientController implements Runnable {
 			dis = new DataInputStream(client.getInputStream());
 			dos = new DataOutputStream(client.getOutputStream());
 			
-			dos.writeInt(ServerConstants.REGISTER_CLIENT);
+			dos.writeInt(ServerConstants.REGISTER_CLIENT);/// otprav chisla (4)
 			dos.writeUTF(ClientMain.getName());
 			dos.flush();
 			
@@ -82,12 +82,16 @@ public class ClientController implements Runnable {
 						taChat.appendText(dis.readUTF()+"\n");
 						break;
 					case ServerConstants.REGISTER_BROADCAST:
-						taChat.appendText(dis.readUTF()+"has joined the chat"+"\n");
-//						Platform.runLater(new Runnable() {
-//							  @Override public void run() {
-//								lvUsers.setItems(names);
-//							  }
-//							});
+						String name = dis.readUTF();
+						if(!names.contains(name)) {
+							taChat.appendText(name + " has joined the chat"+"\n");
+							names.add(name);
+						}
+						Platform.runLater(new Runnable() {
+							  @Override public void run() {
+								lvUsers.setItems(names);
+							  }
+							});
 						break;
 				}
 			}

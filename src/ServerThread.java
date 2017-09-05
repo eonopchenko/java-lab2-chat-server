@@ -11,8 +11,7 @@ public class ServerThread extends Thread
 	Socket remoteClient;	
 	ServerController serverController;
 	static ArrayList<ServerThread> connectedClients;
-	
-	ArrayList<Users> users = new ArrayList<Users>();
+	static ArrayList<Users> users = new ArrayList<Users>();
 	
 	private class Users {
 		ServerThread connectedClient;
@@ -74,13 +73,14 @@ public class ServerThread extends Thread
 						// TODO broadcast this registration to all other clients connected to the server (similar to the CHAT_BROADCAST message sent to each client above)
 						for(ServerThread otherClient: connectedClients)
 						{
-							if(!otherClient.equals(this)) // don't send the message to the client that sent the message in the first place
-							{
-								otherClient.getDos().writeInt(ServerConstants.REGISTER_BROADCAST);
-								otherClient.getDos().writeUTF(name);
+							if(!otherClient.equals(this)) { // don't send the message to the client that sent the message in the first place
+								for(Users user : users) {
+									otherClient.getDos().writeInt(ServerConstants.REGISTER_BROADCAST);
+									otherClient.getDos().writeUTF(user.name);
+								}
 							}
 						}
-						break;	
+						break;
 					case ServerConstants.PRIVATE_MESSAGE:
 						// TODO develop code to handle private messages sent by the client
 						break;
