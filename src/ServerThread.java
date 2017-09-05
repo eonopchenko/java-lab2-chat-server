@@ -45,7 +45,7 @@ public class ServerThread extends Thread
 		{
 			try {
 				int mesgType = dis.readInt();
-				System.err.println(mesgType);
+//				System.err.println(mesgType);
 				
 				switch(mesgType)
 				{
@@ -64,7 +64,6 @@ public class ServerThread extends Thread
 						
 						break;
 					case ServerConstants.REGISTER_CLIENT:
-
 						String name = dis.readUTF();
 						serverController.getTextArea().appendText(name + " has joined the chat" + "\n");
 						userName = name;
@@ -82,6 +81,21 @@ public class ServerThread extends Thread
 						break;
 					case ServerConstants.PRIVATE_MESSAGE:
 						// TODO develop code to handle private messages sent by the client
+						String data1 = dis.readUTF();
+						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data1+"\n");
+						
+						String[] str = data1.split("\\s+");
+						String name1 = str[0].substring(1);
+
+						for(ServerThread otherClient: connectedClients)
+						{
+							if(!otherClient.equals(this) && otherClient.userName.equals(name1)) // don't send the message to the client that sent the message in the first place
+							{
+								otherClient.getDos().writeInt(ServerConstants.CHAT_BROADCAST);
+								otherClient.getDos().writeUTF(data1);
+							}
+						}
+						
 						break;
 				}				
 			}

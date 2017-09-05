@@ -36,7 +36,11 @@ public class ClientController implements Runnable {
     @FXML
     void btnSendOnActionHandler(ActionEvent event) {
 		try {
-			dos.writeInt(ServerConstants.CHAT_MESSAGE);
+			if(tfSend.getText().charAt(0) == '@') {
+				dos.writeInt(ServerConstants.PRIVATE_MESSAGE);
+			} else {
+				dos.writeInt(ServerConstants.CHAT_MESSAGE);
+			}
 			dos.writeUTF(tfSend.getText());
 			dos.flush();
 		} catch (IOException e) {
