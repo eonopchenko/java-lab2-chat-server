@@ -27,7 +27,7 @@ public class ServerThread extends Thread
 	public ServerThread(Socket remoteClient, ServerController serverController, ArrayList<ServerThread> connectedClients)
 	{
 		this.remoteClient = remoteClient;
-		this.connectedClients = connectedClients;
+		ServerThread.connectedClients = connectedClients;
 		try {
 			this.dis = new DataInputStream(remoteClient.getInputStream());
 			this.dos = new DataOutputStream(remoteClient.getOutputStream());
