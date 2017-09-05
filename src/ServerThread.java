@@ -10,7 +10,7 @@ public class ServerThread extends Thread
 	DataOutputStream dos;
 	Socket remoteClient;	
 	ServerController serverController;
-	ArrayList<ServerThread> connectedClients;
+	static ArrayList<ServerThread> connectedClients;
 	
 	ArrayList<Users> users = new ArrayList<Users>();
 	

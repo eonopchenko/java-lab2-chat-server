@@ -1,13 +1,10 @@
+/AppendMessageInterface.class
 /ClientController.class
 /ClientLayout.fxml
 /ClientMain.class
 /ServerConstants.class
-/ServerMain$ConnectionThread.class
-/ServerMain.class
-/ServerThread.class
-/AppendMessageInterface.class
-/ServerController.fxml
 /ServerController.class
 /ServerLayout.fxml
-/ClientController$1.class
+/ServerMain.class
 /ServerThread$Users.class
+/ServerThread.class
