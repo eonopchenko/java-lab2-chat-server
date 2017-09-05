@@ -42,9 +42,8 @@ public class ClientController implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		tfSend.clear();
     }
-    
-
     
     public ClientController() {
 		try {
@@ -52,7 +51,7 @@ public class ClientController implements Runnable {
 			dis = new DataInputStream(client.getInputStream());
 			dos = new DataOutputStream(client.getOutputStream());
 			
-			dos.writeInt(ServerConstants.REGISTER_CLIENT);/// otprav chisla (4)
+			dos.writeInt(ServerConstants.REGISTER_CLIENT);
 			dos.writeUTF(ClientMain.getName());
 			dos.flush();
 			
@@ -65,11 +64,10 @@ public class ClientController implements Runnable {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-    }
-	
+    }	
 
 	@Override
-	public void run() {
+	public void run() {		
 		while(true)
 		{
 			try {
@@ -83,15 +81,16 @@ public class ClientController implements Runnable {
 						break;
 					case ServerConstants.REGISTER_BROADCAST:
 						String name = dis.readUTF();
-						if(!names.contains(name)) {
-							taChat.appendText(name + " has joined the chat"+"\n");
-							names.add(name);
-						}
 						Platform.runLater(new Runnable() {
-							  @Override public void run() {
+							@Override public void run() {
+								if(!names.contains(name))
+								{
+									taChat.appendText(name + " has joined the chat"+"\n");
+									names.add(name);
+								}
 								lvUsers.setItems(names);
-							  }
-							});
+							}
+						});
 						break;
 				}
 			}

@@ -10,23 +10,24 @@ public class ServerThread extends Thread
 	DataOutputStream dos;
 	Socket remoteClient;	
 	ServerController serverController;
-	static ArrayList<ServerThread> connectedClients;
-	static ArrayList<Users> users = new ArrayList<Users>();
+	ArrayList<ServerThread> connectedClients;
+	String userName;
+//	ArrayList<Users> users = new ArrayList<Users>();
 	
-	private class Users {
-		ServerThread connectedClient;
-		String name;
-		public Users(ServerThread connectedClient, String name) {
-			this.connectedClient = connectedClient;
-			this.name = name;
-		}
-	}
-
+//	private class Users {
+//		ServerThread connectedClient;
+//		String name;
+//		public Users(ServerThread connectedClient, String name) {
+//			this.connectedClient = connectedClient;
+//			this.name = name;
+//		}
+//	}
 	
 	public ServerThread(Socket remoteClient, ServerController serverController, ArrayList<ServerThread> connectedClients)
 	{
+		this.userName = "";
 		this.remoteClient = remoteClient;
-		ServerThread.connectedClients = connectedClients;
+		this.connectedClients = connectedClients;
 		try {
 			this.dis = new DataInputStream(remoteClient.getInputStream());
 			this.dos = new DataOutputStream(remoteClient.getOutputStream());
@@ -50,7 +51,6 @@ public class ServerThread extends Thread
 				{
 					case ServerConstants.CHAT_MESSAGE:
 						String data = dis.readUTF();
-						System.err.println(data);
 						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data+"\n");
 						
 						for(ServerThread otherClient: connectedClients)
@@ -64,22 +64,21 @@ public class ServerThread extends Thread
 						
 						break;
 					case ServerConstants.REGISTER_CLIENT:
-						// TODO develop code to handle new client registrations
-						String name = dis.readUTF();
-						System.err.println(name);
-						serverController.getTextArea().appendText(name + " has joined the chat" + "\n");
-						users.add(new Users(this, name));
 
-						// TODO broadcast this registration to all other clients connected to the server (similar to the CHAT_BROADCAST message sent to each client above)
-						for(ServerThread otherClient: connectedClients)
+						String name = dis.readUTF();
+						serverController.getTextArea().appendText(name + " has joined the chat" + "\n");
+						userName = name;
+
+
+						for(ServerThread client: connectedClients)
 						{
-							if(!otherClient.equals(this)) { // don't send the message to the client that sent the message in the first place
-								for(Users user : users) {
-									otherClient.getDos().writeInt(ServerConstants.REGISTER_BROADCAST);
-									otherClient.getDos().writeUTF(user.name);
-								}
+							for(ServerThread clientName: connectedClients) 
+							{
+							client.getDos().writeInt(ServerConstants.REGISTER_BROADCAST);
+							client.getDos().writeUTF(clientName.getUserName());
 							}
 						}
+
 						break;
 					case ServerConstants.PRIVATE_MESSAGE:
 						// TODO develop code to handle private messages sent by the client
@@ -96,5 +95,10 @@ public class ServerThread extends Thread
 
 	public DataOutputStream getDos() {
 		return dos;
+	}
+
+	public String getUserName()
+	{
+		return userName;
 	}
 }

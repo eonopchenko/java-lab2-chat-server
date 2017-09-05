@@ -23,7 +23,7 @@ public class ClientMain extends Application {
 	    	    name = result.get();
 	        	URL fxmlUrl = this.getClass().getClassLoader().getResource("ClientLayout.fxml");
 	            Pane mainPane = FXMLLoader.<Pane>load(fxmlUrl);
-	            primaryStage.setTitle("Chat Client");
+	            primaryStage.setTitle("Chat Client " + name);
 	            primaryStage.setScene(new Scene(mainPane));
 	            primaryStage.show();
 	    	}
