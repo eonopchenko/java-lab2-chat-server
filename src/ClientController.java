@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,9 +19,10 @@ public class ClientController implements Runnable {
 	Socket client;
 	DataInputStream dis;
 	DataOutputStream dos;
+	ObservableList<String> names = FXCollections.observableArrayList();
 	
 	@FXML
-	private ListView lvUsers;
+	private ListView<String> lvUsers;
 	
 	@FXML
 	private TextArea taChat;
@@ -48,6 +52,10 @@ public class ClientController implements Runnable {
 			dis = new DataInputStream(client.getInputStream());
 			dos = new DataOutputStream(client.getOutputStream());
 			
+			dos.writeInt(ServerConstants.REGISTER_CLIENT);
+			dos.writeUTF(ClientMain.getName());
+			dos.flush();
+			
 			Thread clientThread = new Thread(this);
 			clientThread.start();
 		}
@@ -57,7 +65,8 @@ public class ClientController implements Runnable {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+    }
+	
 
 	@Override
 	public void run() {
@@ -71,6 +80,14 @@ public class ClientController implements Runnable {
 				{
 					case ServerConstants.CHAT_BROADCAST:
 						taChat.appendText(dis.readUTF()+"\n");
+						break;
+					case ServerConstants.REGISTER_BROADCAST:
+						taChat.appendText(dis.readUTF()+"has joined the chat"+"\n");
+//						Platform.runLater(new Runnable() {
+//							  @Override public void run() {
+//								lvUsers.setItems(names);
+//							  }
+//							});
 						break;
 				}
 			}
