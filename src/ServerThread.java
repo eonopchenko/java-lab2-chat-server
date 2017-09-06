@@ -12,16 +12,6 @@ public class ServerThread extends Thread
 	ServerController serverController;
 	ArrayList<ServerThread> connectedClients;
 	String userName;
-//	ArrayList<Users> users = new ArrayList<Users>();
-	
-//	private class Users {
-//		ServerThread connectedClient;
-//		String name;
-//		public Users(ServerThread connectedClient, String name) {
-//			this.connectedClient = connectedClient;
-//			this.name = name;
-//		}
-//	}
 	
 	public ServerThread(Socket remoteClient, ServerController serverController, ArrayList<ServerThread> connectedClients)
 	{
@@ -45,27 +35,31 @@ public class ServerThread extends Thread
 		{
 			try {
 				int mesgType = dis.readInt();
-//				System.err.println(mesgType);
 				
 				switch(mesgType)
 				{
 					case ServerConstants.CHAT_MESSAGE:
 						String data = dis.readUTF();
-						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data+"\n");
+						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+"("+userName+")"+">"+data+"\n");
 						
 						for(ServerThread otherClient: connectedClients)
 						{
-							if(!otherClient.equals(this)) // don't send the message to the client that sent the message in the first place
+							if(otherClient.equals(this))
 							{
 								otherClient.getDos().writeInt(ServerConstants.CHAT_BROADCAST);
-								otherClient.getDos().writeUTF(data);
+								otherClient.getDos().writeUTF("Me : " + data);
+							}
+							else
+							{
+								otherClient.getDos().writeInt(ServerConstants.CHAT_BROADCAST);
+								otherClient.getDos().writeUTF(userName + " : " + data);
 							}
 						}
 						
 						break;
 					case ServerConstants.REGISTER_CLIENT:
 						String name = dis.readUTF();
-						serverController.getTextArea().appendText(name + " has joined the chat" + "\n");
+						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+"("+name+")" + " has joined the chat" + "\n");
 						userName = name;
 
 
@@ -80,19 +74,23 @@ public class ServerThread extends Thread
 
 						break;
 					case ServerConstants.PRIVATE_MESSAGE:
-						// TODO develop code to handle private messages sent by the client
 						String data1 = dis.readUTF();
-						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+">"+data1+"\n");
+						serverController.getTextArea().appendText(remoteClient.getInetAddress()+":"+remoteClient.getPort()+"("+userName+")"+">"+data1+"\n");
 						
 						String[] str = data1.split("\\s+");
 						String name1 = str[0].substring(1);
 
 						for(ServerThread otherClient: connectedClients)
 						{
-							if(!otherClient.equals(this) && otherClient.userName.equals(name1)) // don't send the message to the client that sent the message in the first place
+							if(otherClient.userName.equals(name1))
 							{
 								otherClient.getDos().writeInt(ServerConstants.CHAT_BROADCAST);
-								otherClient.getDos().writeUTF(data1);
+								otherClient.getDos().writeUTF("Private message from " + userName + " : " + data1);
+							}
+							else if(otherClient.equals(this))
+							{
+								otherClient.getDos().writeInt(ServerConstants.CHAT_BROADCAST);
+								otherClient.getDos().writeUTF("My private message : " + data1);
 							}
 						}
 						

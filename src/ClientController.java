@@ -81,9 +81,8 @@ public class ClientController implements Runnable {
 		while(true)
 		{
 			try {
-				int messageType = dis.readInt(); // receive a message from the server, determine message type based on an integer
-				
-				// decode message and process
+				int messageType = dis.readInt();
+
 				switch(messageType)
 				{
 					case ServerConstants.CHAT_BROADCAST:
